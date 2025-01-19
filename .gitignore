@@ -69,6 +69,8 @@ ScaffoldingReadMe.txt
 # StyleCop
 StyleCopReport.xml
 
+*.dll
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
@@ -361,3 +363,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/LifeGame.vcxproj
+/LifeGame.vcxproj.filters
