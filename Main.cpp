@@ -6,7 +6,7 @@ int main()
     sfw window(sf::VideoMode::getFullscreenModes()[0], "Life Game");
 
     window.clear();
-    a8 GameArray = InitArray();
+    a8 GameArray = InitArrayChance();
     r16 square = InitArrayB();
     window.display();
      
@@ -40,9 +40,6 @@ int main()
                 if (GameArray[i][j] == 1) {
                     square[i][j].setFillColor(sf::Color::White);
                     window.draw(square[i][j]);
-                }
-                else {
-                    square[i][j].setFillColor(sf::Color::Blue);
                 }
             }
         }

@@ -40,6 +40,30 @@ a8 InitArray() {
     return arr;
 }
 
+a8 InitArrayChance() {                          // 1/10 cells is alive 
+    std::srand(std::time(nullptr));
+
+    int width = 384;
+    int height = 216;
+    int etat = 0;
+
+    a8 arr;
+    for (int i = 0; i < width; i++)
+    {
+        std::vector <int> tab1D;
+        for (int j = 0; j < height; j++) {
+            etat = std::rand() % 10;
+            if (etat > 0) etat = 0;
+            else etat = 1;
+            tab1D.push_back(etat);
+        }
+
+        arr.push_back(tab1D);
+    }
+    return arr;
+}
+
+
 a8 InitBloc() {
 
     int width = 384;
@@ -73,26 +97,6 @@ a8 InitBloc() {
 }
 
 
-a8 InitArray_temp() {
-    int width = 384;
-    int height = 216;
-    int etat = 0;
-
-    a8 arr;
-    for (int i = 0; i < width; i++)
-    {
-        std::vector <int> tab1D;
-        for (int j = 0; j < height; j++) {
-            etat = 0;
-            tab1D.push_back(etat);
-        }
-
-        arr.push_back(tab1D);
-    }
-    return arr;
-}
-
-
 a8 InitGlider() {
 
     int etat = 0;
@@ -116,7 +120,7 @@ a8 InitGlider() {
 
 a8 UpdateArray(a8 arr) {
 
-    a8 array_temp = InitArray_temp();
+    a8 array_temp = InitArrayZero();
 
     for (int i = 1; i < arr.size() - 1; i++)
     {
