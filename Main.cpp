@@ -6,9 +6,8 @@ int main()
     sfw window(sf::VideoMode::getFullscreenModes()[0], "Life Game");
 
     window.clear();
-    a8 GameArray = InitGlider();
+    a8 GameArray = InitArray();
     r16 square = InitArrayB();
-    r8 shape({10.0f, 10.0f});
     window.display();
      
 
