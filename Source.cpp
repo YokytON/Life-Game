@@ -121,6 +121,8 @@ a8 InitGlider() {
 a8 UpdateArray(a8 arr) {
 
     a8 array_temp = InitArrayZero();
+    int min_neighbors = 2;
+    int max_neighbors = 3;
 
     for (int i = 1; i < arr.size() - 1; i++)
     {
@@ -132,7 +134,7 @@ a8 UpdateArray(a8 arr) {
 
            
             if (arr[i][j] == 1) { 
-                if (neighbors < 2 || neighbors > 3) {
+                if (neighbors < min_neighbors || neighbors > max_neighbors) {
                     array_temp[i][j] = 0; 
                 }
                 else {
@@ -140,7 +142,7 @@ a8 UpdateArray(a8 arr) {
                 }
             }
             else { 
-                if (neighbors == 3) {
+                if (neighbors == max_neighbors) {
                     array_temp[i][j] = 1;
                 }
                 else {
