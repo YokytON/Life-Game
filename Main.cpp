@@ -6,7 +6,7 @@ int main()
     sfw window(sf::VideoMode::getFullscreenModes()[0], "Life Game");
 
     window.clear();
-    a8 GameArray = InitArrayChance();
+    a8 GameArray = InitArrayRate();
     r16 square = InitArrayB();
     window.display();
      

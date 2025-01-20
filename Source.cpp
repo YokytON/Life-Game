@@ -40,7 +40,7 @@ a8 InitArray() {
     return arr;
 }
 
-a8 InitArrayChance() {                          // 1/10 cells is alive 
+a8 InitArrayRate() {                          // 1/10 cells is alive 
     std::srand(std::time(nullptr));
 
     int width = 384;
