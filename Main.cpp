@@ -4,6 +4,7 @@
 int main()
 {
     sfw window(sf::VideoMode::getFullscreenModes()[0], "Life Game");
+    window.setKeyRepeatEnabled(false);
 
     a8 GameArray = InitArrayRate();
     r16 square = InitArrayB();
@@ -14,15 +15,21 @@ int main()
     StartSprite.setPosition({ 430., 100. });
     bool startbtn = true;
     bool reset = false;
+    bool pause = false;
+    int iteration = 0;
     
 
     while (window.isOpen())
     {
+        Sleep(7);
         start:
         while (const std::optional event = window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>()) {
                 window.close();
+                std::cout << iteration;
+            }
+                
         }
 
         if (startbtn) {
@@ -34,6 +41,12 @@ int main()
                 startbtn = false;
             }
             goto start;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) pause = true;
+        while (pause) {
+            Sleep(95);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) pause = false;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
@@ -67,7 +80,7 @@ int main()
             }
         }
         window.display();
-        
+        iteration++;
     }
     return 0;
 }
