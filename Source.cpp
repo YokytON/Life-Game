@@ -1,38 +1,22 @@
 #include "Source.h"
 
+
+
+
+
+
+
 a8 InitArrayZero() {
     int width = 384;
     int height = 216;
-    int etat = 0;
+    int state = 0;
 
     a8 arr;
     for (int i = 0; i < width; i++)
     {
         std::vector <int> tab1D;
         for (int j = 0; j < height; j++) {
-            tab1D.push_back(etat);
-        }
-
-        arr.push_back(tab1D);
-    }
-    return arr;
-}
-
-a8 InitArray() {
-    
-    std::srand(std::time(nullptr));
-
-    int width = 384;
-    int height = 216;
-    int etat = 0;
-
-    a8 arr;
-    for (int i = 0; i < width; i++)
-    {
-        std::vector <int> tab1D;
-        for (int j = 0; j < height; j++) {
-            etat = std::rand() % 2;
-            tab1D.push_back(etat);
+            tab1D.push_back(state);
         }
 
         arr.push_back(tab1D);
@@ -45,17 +29,64 @@ a8 InitArrayRate() {                          // 1/10 cells is alive
 
     int width = 384;
     int height = 216;
-    int etat = 0;
+    int state = 0;
 
     a8 arr;
     for (int i = 0; i < width; i++)
     {
         std::vector <int> tab1D;
         for (int j = 0; j < height; j++) {
-            etat = std::rand() % 10;
-            if (etat > 0) etat = 0;
-            else etat = 1;
-            tab1D.push_back(etat);
+            state = std::rand() % 10;
+            tab1D.push_back(state);
+        }
+
+        arr.push_back(tab1D);
+    }
+    return arr;
+}
+
+c16 InitCells() {
+    std::srand(std::time(nullptr));
+
+    int width = 384;
+    int height = 216;
+    int random50 = 0;
+    a8 state = InitArrayRate();
+    a8 temp_state = InitArrayZero();
+
+
+    c16 cell(width, c8(height));                                      // initialisation de cell
+    for (int i = 0; i < cell.size() - 1; i++) {
+        for (int j = 0; j < cell[i].size() - 1; j++) {
+            if (state[i][j] == 1) {
+                temp_state[i][j] = 1;
+            }
+            else {
+                temp_state[i][j] = 0;
+            }
+            state[i][j] = temp_state[i][j];
+            cell[i][j].SetState(state[i][j]);
+        }
+    }
+
+    return cell;
+}
+
+a8 InitArray() {
+    
+    std::srand(std::time(nullptr));
+
+    int width = 384;
+    int height = 216;
+    int state = 0;
+
+    a8 arr;
+    for (int i = 0; i < width; i++)
+    {
+        std::vector <int> tab1D;
+        for (int j = 0; j < height; j++) {
+            state = std::rand() % 2;
+            tab1D.push_back(state);
         }
 
         arr.push_back(tab1D);
@@ -64,11 +95,13 @@ a8 InitArrayRate() {                          // 1/10 cells is alive
 }
 
 
+
+
 a8 InitBloc() {
 
     int width = 384;
     int height = 216;
-    int etat = 0;
+    int state = 0;
 
     a8 arr;
     for (int i = 0; i < width; i++)
@@ -79,16 +112,16 @@ a8 InitBloc() {
             if (j == 20 || j == 21) {
                 switch (i) {
                     case 20:
-                        etat = 1;
+                        state = 1;
                         break;
                     case 21:
-                        etat = 1;
+                        state = 1;
                         break;
                 }
             }
-            else etat = 0;
+            else state = 0;
 
-            tab1D.push_back(etat);
+            tab1D.push_back(state);
         }
 
         arr.push_back(tab1D);
@@ -99,7 +132,7 @@ a8 InitBloc() {
 
 a8 InitGlider() {
 
-    int etat = 0;
+    int state = 0;
 
     a8 arr = InitArrayZero();
     for (int i = 0; i < arr.size() - 1; i++)
@@ -118,23 +151,40 @@ a8 InitGlider() {
 
 }
 
-a8 UpdateArray(a8 arr) {
+c16 MakeCellSick(c16 cell) {
+    std::srand(std::time(nullptr));
+    int rate1;
+    for (int i = 1; i < cell.size() - 1; i++) {
+        for (int j = 1; j < cell[i].size() - 1; j++) {
+            rate1 = std::rand() % 100;
+            if (rate1 == 1) {
+                cell[i][j].SetSickness("Sick");
+            }
+            if (cell[i][j].GetState() == 0) cell[i][j].SetSickness("Nothing");
+            if (cell[i][j].GetSickness() == "Nothing") cell[i][j].ResetNeighbors();
+            if (cell[i][j].GetSickness() == "Sick") {
+                cell[i][j].SetMaxNeighbors(1);
+                cell[i][j].SetMinNeighbors(3);
+            }
+        }
+    }
+    return cell;
+}
 
+c16 UpdateArray(c16 cell) {
     a8 array_temp = InitArrayZero();
-    int min_neighbors = 2;
-    int max_neighbors = 3;
 
-    for (int i = 1; i < arr.size() - 1; i++)
+    for (int i = 1; i < cell.size() - 1; i++)
     {
         std::vector <int> tab1D;
-        for (int j = 1; j < arr[i].size() - 1; j++) {
-            int neighbors = arr[i - 1][j - 1] + arr[i - 1][j] + arr[i - 1][j + 1]
-                + arr[i][j - 1] + arr[i][j + 1]
-                + arr[i + 1][j - 1] + arr[i + 1][j] + arr[i + 1][j + 1];
+        for (int j = 1; j < cell[i].size() - 1; j++) {
+            int neighbors = cell[i - 1][j - 1].GetState() + cell[i - 1][j].GetState() + cell[i - 1][j + 1].GetState()
+                + cell[i][j - 1].GetState() + cell[i][j + 1].GetState()
+                + cell[i + 1][j - 1].GetState() + cell[i + 1][j].GetState() + cell[i + 1][j + 1].GetState();
 
            
-            if (arr[i][j] == 1) { 
-                if (neighbors < min_neighbors || neighbors > max_neighbors) {
+            if (cell[i][j].GetState() == 1) {
+                if (neighbors < cell[i][j].GetMinNeighbors() || neighbors > cell[i][j].GetMaxNeighbors()) {
                     array_temp[i][j] = 0; 
                 }
                 else {
@@ -142,25 +192,25 @@ a8 UpdateArray(a8 arr) {
                 }
             }
             else { 
-                if (neighbors == max_neighbors) {
+                if (neighbors == cell[i][j].GetMaxNeighbors()) {
                     array_temp[i][j] = 1;
                 }
                 else {
                     array_temp[i][j] = 0;
                 }
             }
-
         }
     }
 
-    for (int i = 1; i < arr.size() - 1; i++) {
-        std::vector <int> tab1D;
-        for (int j = 1; j < arr[i].size() - 1; j++) {
-            arr[i][j] = array_temp[i][j];
+    for (int i = 1; i < cell.size() - 1; i++) {
+        for (int j = 1; j < cell[i].size() - 1; j++) {
+            cell[i][j].SetState(array_temp[i][j]);
+            if (array_temp[i][j] == 0) cell[i][j].SetSickness("Nothing");
         }
     }
 
-    return arr;
+    cell = MakeCellSick(cell);
+    return cell;
 }
 
 
@@ -179,6 +229,5 @@ r16 InitArrayB() {
         }
         square.push_back(tab1D);
     }
-
     return square;
 }

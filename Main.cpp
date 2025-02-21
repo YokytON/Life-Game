@@ -6,7 +6,7 @@ int main()
     sfw window(sf::VideoMode::getFullscreenModes()[0], "Life Game");
     window.setKeyRepeatEnabled(false);
 
-    a8 GameArray = InitArrayRate();
+    c16 GameArray = InitCells();
     r16 square = InitArrayB();
      
 
@@ -43,16 +43,21 @@ int main()
             goto start;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) pause = true;
-        while (pause) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+            pause = true;
             Sleep(95);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) pause = false;
+        }
+        while (pause) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+                pause = false;
+                Sleep(95);
+            }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
         {
             window.clear(sf::Color::Black);
-            GameArray = InitArrayRate();
+            GameArray = InitCells();
         }
 
         window.clear(sf::Color::Black);
@@ -69,12 +74,18 @@ int main()
                 std::cout << "Ligne " << i << " trop petite !\n";
                 continue;
             }
-            for (int j = 2; j < GameArray[i].size() - 2; j++) {
-                sf::Vector2f squarePos(i * 5, j * 5);
+            for (int j = 2; j < GameArray[j].size() - 2; j++) {
+                sf::Vector2f squarePos(i * 5,j * 5);
                 square[i][j].setPosition(squarePos);
 
-                if (GameArray[i][j] == 1) {
+                if (GameArray[i][j].GetState() == 1) {
+                    if (GameArray[i][j].GetSickness() == "Sick") {
+                        square[i][j].setFillColor(sf::Color::Red);
+                    }
+                    else
+                    {
                     square[i][j].setFillColor(sf::Color::White);
+                    }
                     window.draw(square[i][j]);
                 }
             }
